@@ -28,7 +28,8 @@
         }
 
         body {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e8f4ff 100%);
+            background: var(--tg-theme-bg-color, #f8f9fa);
+            color: var(--tg-theme-text-color, #2c3e50);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -38,7 +39,6 @@
             overflow-x: hidden;
         }
 
-        /* تصميم الأزرار */
         .mode-container {
             display: flex;
             flex-direction: column;
@@ -70,8 +70,7 @@
             padding: 0.8rem 1.8rem;
             border: none;
             border-radius: 30px;
-            background: rgba(255,255,255,0.9);
-            backdrop-filter: blur(5px);
+            background: var(--tg-theme-secondary-bg-color, rgba(255,255,255,0.9));
             color: var(--primary);
             cursor: pointer;
             box-shadow: var(--shadow);
@@ -86,7 +85,6 @@
             transform: translateY(-2px);
         }
 
-        /* منطقة العد */
         .counter-wrapper {
             position: relative;
             margin: 2rem 0;
@@ -108,21 +106,19 @@
             font-weight: 700;
         }
 
-        /* زر التسبيح الرئيسي */
         .tasbeeh-btn {
             width: 100px;
             height: 100px;
             border: none;
             border-radius: 50%;
-            background: var(--secondary);
-            color: white;
+            background: var(--tg-theme-button-color, #3498db);
+            color: var(--tg-theme-button-text-color, white);
             cursor: pointer;
             box-shadow: var(--shadow);
             margin-top: 1.5rem;
             font-size: 1.5rem;
         }
 
-        /* إشعارات */
         .goal-alert {
             position: fixed;
             top: 20px;
@@ -141,7 +137,6 @@
             to { transform: translateY(0); }
         }
 
-        /* تصميم الجوال */
         @media (max-width: 480px) {
             .counter-card {
                 padding: 2rem 3rem;
@@ -154,6 +149,11 @@
             .general-btn {
                 padding: 0.8rem 2rem;
                 font-size: 1.1rem;
+            }
+            
+            .tasbeeh-btn {
+                width: 120px;
+                height: 120px;
             }
         }
     </style>
@@ -179,23 +179,34 @@
     <div class="goal-alert" id="goalAlert"></div>
 
     <script>
+        const tg = window.Telegram.WebApp;
         let state = {
             infinite: 0,
             mode33: 0,
             mode100: 0,
-            currentMode: 'infinite'
+            currentMode: 'infinite',
+            userId: tg.initDataUnsafe.user?.id || 'guest'
         };
 
-        // تحميل الحالة
-        if (localStorage.getItem('tasbeehState')) {
-            const savedState = JSON.parse(localStorage.getItem('tasbeehState'));
-            state = {
-                infinite: Number(savedState.infinite) || 0,
-                mode33: Number(savedState.mode33) || 0,
-                mode100: Number(savedState.mode100) || 0,
-                currentMode: savedState.currentMode || 'infinite'
-            };
+        // تحميل الحالة من تيليجرام
+        function loadState() {
+            const saved = tg.CloudStorage.getItem(`tasbeeh_${state.userId}`);
+            if (saved) state = JSON.parse(saved);
+            updateDisplay();
+            updateActiveMode();
         }
+
+        // حفظ الحالة في تيليجرام
+        function saveState() {
+            tg.CloudStorage.setItem(`tasbeeh_${state.userId}`, JSON.stringify(state));
+            tg.CloudStorage.flush();
+            tg.MainButton.setText(`العدد: ${state[state.currentMode]}`);
+        }
+
+        // تهيئة تيليجرام
+        tg.MainButton.setText('العدد: 0');
+        tg.MainButton.show();
+        tg.MainButton.onClick(addTasbeeh);
 
         function setMode(mode) {
             state.currentMode = mode;
@@ -252,13 +263,9 @@
             setTimeout(() => alertDiv.style.display = 'none', 2000);
         }
 
-        function saveState() {
-            localStorage.setItem('tasbeehState', JSON.stringify(state));
-        }
-
-        // التهيئة الأولية
-        updateDisplay();
-        updateActiveMode();
+        // البدء
+        tg.ready();
+        loadState();
     </script>
 </body>
 </html>
