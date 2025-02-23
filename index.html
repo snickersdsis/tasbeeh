@@ -10,13 +10,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: var(--tg-theme-button-color, #00948d);
-            --secondary: var(--tg-theme-button-color, #00948d);
-            --accent: var(--tg-theme-button-color, #00948d);
+            --primary: var(--tg-theme-button-color, #2AABEE);
+            --secondary: var(--tg-theme-button-color, #2AABEE);
+            --accent: var(--tg-theme-button-color, #2AABEE);
             --background: var(--tg-theme-bg-color, #ffffff);
             --text: var(--tg-theme-text-color, #000000);
-            --hint: var(--tg-theme-hint-color, #ffffff);
-            --link: var(--tg-theme-link-color, #00948d);
+            --hint: var(--tg-theme-hint-color, #999999);
+            --link: var(--tg-theme-link-color, #2AABEE);
             --button-text: var(--tg-theme-button-text-color, #ffffff);
             --shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
@@ -200,12 +200,12 @@
 
     <div class="counter-wrapper">
         <div class="counter-card">
-            <div class="counter" id="counter"></div>
+            <div class="counter" id="counter">0</div>
         </div>
         <button class="reset-btn" onclick="resetCounter()">إعادة تعيين</button>
     </div>
 
-    <button class="tasbeeh-btn" onclick="addTasbeeh()"></button>
+    <button class="tasbeeh-btn" onclick="addTasbeeh()">+</button>
 
     <div class="goal-alert" id="goalAlert"></div>
 
@@ -325,6 +325,14 @@
 
         tg.onEvent('viewportChanged', saveState);
         tg.onEvent('closeEvent', saveState);
+
+        // Initialize
+        tg.ready();
+        tg.MainButton.setText('العدد: 0');
+        tg.MainButton.show();
+        tg.MainButton.onClick(addTasbeeh);
+        
+        loadState();
     </script>
 </body>
 </html>
