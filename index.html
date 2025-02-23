@@ -4,16 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#2c3e50">
-    <title>مُسَبِّحَةُ الذِّكْرِ</title>
+    <title>مُسَبِّحَةُ الذِّكْرِ</title>
     <link rel="manifest" href="/manifest.json">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --accent: #27ae60;
-            --background: #f8f9fa;
+            --primary: var(--tg-theme-button-color, #00948d);
+            --secondary: var(--tg-theme-button-color, #00948d);
+            --accent: var(--tg-theme-button-color, #00948d);
+            --background: var(--tg-theme-bg-color, #ffffff);
+            --text: var(--tg-theme-text-color, #000000);
+            --hint: var(--tg-theme-hint-color, #ffffff);
+            --link: var(--tg-theme-link-color, #00948d);
+            --button-text: var(--tg-theme-button-text-color, #ffffff);
             --shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
 
@@ -28,8 +32,8 @@
         }
 
         body {
-            background: var(--tg-theme-bg-color, #f8f9fa);
-            color: var(--tg-theme-text-color, #2c3e50);
+            background: var(--background);
+            color: var(--text);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -45,18 +49,21 @@
             align-items: center;
             gap: 1.5rem;
             margin-bottom: 2rem;
+            width: 100%;
+            max-width: 400px;
         }
 
         .general-btn {
             padding: 1rem 2.5rem;
             border: none;
             border-radius: 35px;
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
-            color: white;
+            background: var(--primary);
+            color: var(--button-text);
             cursor: pointer;
-            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+            box-shadow: var(--shadow);
             font-size: 1.3rem;
             transition: all 0.3s;
+            width: 100%;
         }
 
         .mode-bar {
@@ -64,46 +71,68 @@
             gap: 1rem;
             flex-wrap: wrap;
             justify-content: center;
+            width: 100%;
         }
 
         .mode-btn {
             padding: 0.8rem 1.8rem;
             border: none;
             border-radius: 30px;
-            background: var(--tg-theme-secondary-bg-color, rgba(255,255,255,0.9));
-            color: var(--primary);
+            background: var(--background);
+            color: var(--text);
             cursor: pointer;
             box-shadow: var(--shadow);
             transition: all 0.3s;
             font-size: 1.1rem;
+            flex: 1;
+            min-width: 120px;
         }
 
         .mode-btn.active,
         .general-btn.active {
             background: var(--secondary);
-            color: white;
+            color: var(--button-text);
             transform: translateY(-2px);
         }
 
         .counter-wrapper {
             position: relative;
             margin: 2rem 0;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
         }
 
         .counter-card {
-            background: linear-gradient(145deg, #ffffff, #f8f9fa);
-            padding: 3rem 5rem;
+            background: var(--background);
+            padding: 3rem 2rem;
             border-radius: 25px;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            box-shadow: var(--shadow);
             position: relative;
             overflow: hidden;
         }
 
         .counter {
             font-size: 5.5rem;
-            color: #2c3e50;
+            color: var(--text);
             text-shadow: 3px 3px 6px rgba(0,0,0,0.1);
             font-weight: 700;
+        }
+
+        .reset-btn {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 20px;
+            background: var(--primary);
+            color: var(--button-text);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
         }
 
         .tasbeeh-btn {
@@ -111,19 +140,20 @@
             height: 100px;
             border: none;
             border-radius: 50%;
-            background: var(--tg-theme-button-color, #3498db);
-            color: var(--tg-theme-button-text-color, white);
+            background: var(--primary);
+            color: var(--button-text);
             cursor: pointer;
             box-shadow: var(--shadow);
-            margin-top: 1.5rem;
+            margin-top: 3rem;
             font-size: 1.5rem;
+            transition: transform 0.2s;
         }
 
         .goal-alert {
             position: fixed;
             top: 20px;
-            background: #27ae60;
-            color: white;
+            background: var(--primary);
+            color: var(--button-text);
             padding: 1rem 2rem;
             border-radius: 30px;
             box-shadow: var(--shadow);
@@ -133,17 +163,17 @@
         }
 
         @keyframes slideIn {
-            from { transform: translateY(-100px); }
-            to { transform: translateY(0); }
+            from { transform: translateY(-100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         @media (max-width: 480px) {
             .counter-card {
-                padding: 2rem 3rem;
+                padding: 2rem;
             }
             
             .counter {
-                font-size: 3.5rem;
+                font-size: 4rem;
             }
             
             .general-btn {
@@ -152,8 +182,9 @@
             }
             
             .tasbeeh-btn {
-                width: 120px;
-                height: 120px;
+                width: 80px;
+                height: 80px;
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -169,17 +200,18 @@
 
     <div class="counter-wrapper">
         <div class="counter-card">
-            <div class="counter" id="counter">0</div>
+            <div class="counter" id="counter"></div>
         </div>
-        <button class="reset-btn" onclick="resetCounter()">↺</button>
+        <button class="reset-btn" onclick="resetCounter()">إعادة تعيين</button>
     </div>
 
-    <button class="tasbeeh-btn" onclick="addTasbeeh()">➕</button>
+    <button class="tasbeeh-btn" onclick="addTasbeeh()"></button>
 
     <div class="goal-alert" id="goalAlert"></div>
 
     <script>
         const tg = window.Telegram.WebApp;
+        
         let state = {
             infinite: 0,
             mode33: 0,
@@ -188,25 +220,35 @@
             userId: tg.initDataUnsafe.user?.id || 'guest'
         };
 
-        // تحميل الحالة من تيليجرام
         function loadState() {
-            const saved = tg.CloudStorage.getItem(`tasbeeh_${state.userId}`);
-            if (saved) state = JSON.parse(saved);
+            try {
+                const saved = localStorage.getItem(`tasbeeh_${state.userId}`);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    state = {
+                        infinite: Number(parsed.infinite) || 0,
+                        mode33: Number(parsed.mode33) || 0,
+                        mode100: Number(parsed.mode100) || 0,
+                        currentMode: parsed.currentMode || 'infinite',
+                        userId: parsed.userId || state.userId
+                    };
+                }
+            } catch (e) {
+                console.error('Error loading state:', e);
+            }
             updateDisplay();
             updateActiveMode();
         }
 
-        // حفظ الحالة في تيليجرام
         function saveState() {
-            tg.CloudStorage.setItem(`tasbeeh_${state.userId}`, JSON.stringify(state));
-            tg.CloudStorage.flush();
-            tg.MainButton.setText(`العدد: ${state[state.currentMode]}`);
+            try {
+                localStorage.setItem(`tasbeeh_${state.userId}`, JSON.stringify(state));
+                tg.CloudStorage.setItem(`tasbeeh_${state.userId}`, JSON.stringify(state));
+                tg.MainButton.setText(`العدد: ${state[state.currentMode]}`);
+            } catch (e) {
+                console.error('Error saving state:', e);
+            }
         }
-
-        // تهيئة تيليجرام
-        tg.MainButton.setText('العدد: 0');
-        tg.MainButton.show();
-        tg.MainButton.onClick(addTasbeeh);
 
         function setMode(mode) {
             state.currentMode = mode;
@@ -216,25 +258,35 @@
         }
 
         function addTasbeeh() {
-            const currentCount = state[state.currentMode];
+            const currentMode = state.currentMode;
+            const currentCount = Number(state[currentMode]) || 0;
             
-            if ((state.currentMode === 33 && currentCount >= 33) ||
-                (state.currentMode === 100 && currentCount >= 100)) {
+            if ((currentMode === 33 && currentCount >= 33) ||
+                (currentMode === 100 && currentCount >= 100)) {
                 showAlert('🎉 تم إكمال الهدف!');
                 if ('vibrate' in navigator) navigator.vibrate([200]);
                 return;
             }
 
-            state[state.currentMode]++;
+            state[currentMode] = currentCount + 1;
             updateDisplay();
             animateButton();
             saveState();
         }
 
         function resetCounter() {
+            const prevValue = state[state.currentMode];
             state[state.currentMode] = 0;
             updateDisplay();
             saveState();
+            
+            if (prevValue > 0) {
+                tg.showPopup({
+                    title: 'تم التصفير',
+                    message: 'تم إعادة العداد إلى الصفر بنجاح',
+                    buttons: [{ type: 'ok' }]
+                });
+            }
         }
 
         function updateDisplay() {
@@ -263,9 +315,16 @@
             setTimeout(() => alertDiv.style.display = 'none', 2000);
         }
 
-        // البدء
-        tg.ready();
-        loadState();
+        // Event Listeners for App Lifecycle
+        window.addEventListener('beforeunload', saveState);
+        window.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                saveState();
+            }
+        });
+
+        tg.onEvent('viewportChanged', saveState);
+        tg.onEvent('closeEvent', saveState);
     </script>
 </body>
 </html>
