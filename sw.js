@@ -20,7 +20,3 @@ self.addEventListener('fetch', (event) => {
             .then(response => response || fetch(event.request))
     );
 });
-
-document.addEventListener('touchstart', function(e) {
-    e.preventDefault();
-}, { passive: false });
